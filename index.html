@@ -127,6 +127,11 @@ body::after{
 }
 .seal svg{width:28px;height:28px;}
 .envelope-wrap:hover .seal{transform:translate(-50%,-50%) scale(1.12) rotate(-6deg);}
+.music-hint{display:flex;justify-content:center;gap:9px;margin-bottom:16px;font-size:1.4rem;color:var(--gold);filter:drop-shadow(0 0 12px rgba(255,200,70,.45));}
+.music-hint span{animation:noteBob 2.6s ease-in-out infinite;}
+.music-hint span:nth-child(2){animation-delay:.35s;}
+.music-hint span:nth-child(3){animation-delay:.7s;}
+@keyframes noteBob{0%,100%{transform:translateY(0) rotate(-8deg);}50%{transform:translateY(-7px) rotate(8deg);}}
 
 /* ---------- Tarjeta ---------- */
 #card{
@@ -337,6 +342,38 @@ h1{
 .firma{font-size:1.04rem;color:#c5a44a;margin-top:4px;letter-spacing:.05em;}
 .footer{width:100%;max-width:580px;text-align:center;color:#8f7a3f;font-size:.84rem;margin-top:44px;opacity:.85;font-style:italic;}
 
+/* ---------- Quiz ---------- */
+.quiz-progress{font-family:'Jost',sans-serif;font-weight:300;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:#c5a44a;margin-bottom:14px;}
+.quiz-q{font-style:italic;font-size:clamp(1.02rem,4vw,1.16rem);color:#f0d47c;line-height:1.55;margin-bottom:18px;min-height:3.4em;}
+.quiz-opts{display:flex;flex-direction:column;gap:10px;text-align:left;}
+.quiz-opt{
+  display:flex;align-items:flex-start;gap:12px;width:100%;
+  padding:13px 14px;border-radius:14px;border:1px solid rgba(255,216,77,.32);
+  background:linear-gradient(180deg,rgba(38,30,18,.92),rgba(20,15,9,.94));
+  color:#ead27a;font-family:'Cormorant Garamond',serif;font-size:1.02rem;line-height:1.4;
+  transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+.quiz-opt:hover{transform:translateY(-2px);border-color:rgba(255,216,77,.6);box-shadow:0 10px 22px -10px rgba(0,0,0,.7);}
+.quiz-opt .tag{flex:none;display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(255,216,77,.5);color:var(--gold);font-family:'Jost',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:.05em;}
+.quiz-opt.clicked{border-color:transparent;}
+.quiz-opt:disabled{opacity:.55;cursor:default;}
+.quiz-opt.clicked.ok{background:linear-gradient(135deg,#ffe175,#efb537);}
+.quiz-opt.clicked.ok .tag{background:#171006;color:var(--gold);border-color:transparent;}
+.quiz-opt.clicked.bad{background:linear-gradient(135deg,#ff8a5a,#d95a2b);color:#2a0f03;}
+.quiz-opt.clicked.bad .tag{background:#3a1205;color:#ffd9c4;border-color:transparent;}
+.quiz-opt .txt{flex:1;}
+.quiz-feedback{margin-top:18px;min-height:2.2em;font-size:1.02rem;line-height:1.5;display:none;}
+.quiz-feedback.show{display:block;animation:feedbackPop .5s ease both;}
+.quiz-feedback.ok{color:#ffd84d;}
+.quiz-feedback.bad{color:#ffb08a;}
+.quiz-feedback .emoji{font-size:1.25rem;}
+@keyframes feedbackPop{from{opacity:0;transform:translateY(8px) scale(.97);}to{opacity:1;transform:none;}}
+.quiz-next{margin-top:6px;}
+.quiz-end{display:none;flex-direction:column;align-items:center;gap:16px;}
+.quiz-end.show{display:flex;animation:feedbackPop .6s ease both;}
+.quiz-score{font-family:'Great Vibes',cursive;font-size:1.9rem;color:var(--gold);line-height:1.3;}
+.quiz-end p{font-style:italic;color:#f0d47c;max-width:30ch;line-height:1.6;font-size:1.05rem;}
+
 /* ---------- Corazones / explosión (solo amarillo) ---------- */
 #burst-layer{position:fixed;inset:0;pointer-events:none;z-index:55;overflow:hidden;}
 .burst-item{
@@ -437,6 +474,14 @@ h1{
 .foto:nth-child(2n){--rot:-2deg;animation-delay:.15s;}
 .foto:nth-child(3n){--rot:1.6deg;}
 .foto:nth-child(4n){--rot:-1.4deg;animation-delay:.3s;}
+.recuerdos-foot{
+  margin-top:34px;padding:18px 16px;border-radius:18px;
+  border:1px solid rgba(255,216,77,.34);
+  background:linear-gradient(180deg,rgba(38,30,18,.85),rgba(20,15,9,.88));
+  font-style:italic;font-size:clamp(1.05rem,4.2vw,1.2rem);line-height:1.7;
+  color:#f0d47c;text-align:center;
+  text-shadow:0 2px 8px rgba(0,0,0,.5);
+}
 
 /* ---------- Audio (sin video) ---------- */
 .audio-btn{
@@ -446,8 +491,10 @@ h1{
   box-shadow:0 12px 28px -8px rgba(0,0,0,.7), 0 0 18px rgba(255,200,70,.18);
   display:flex;align-items:center;justify-content:center;
   animation:musicPulse 4.2s ease-in-out infinite;
-  transition:transform .35s ease;
+  opacity:0;pointer-events:none;transform:translateY(14px) scale(.9);
+  transition:transform .35s ease, opacity .45s ease;
 }
+.audio-btn.show{opacity:1;pointer-events:auto;transform:translateY(0) scale(1);}
 .audio-btn:hover{transform:scale(1.12);}
 .audio-btn.playing{box-shadow:0 0 0 7px rgba(240,203,79,.22);}
 @keyframes musicPulse{0%,100%{box-shadow:0 12px 28px -8px rgba(0,0,0,.7);}50%{box-shadow:0 16px 34px -6px rgba(255,200,70,.3);}}
@@ -599,7 +646,8 @@ h1{
 
 <!-- Sobre -->
 <div id="envelope-screen">
-  <div class="envelope-wrap" id="envelope" role="button" tabindex="0" aria-label="Abrir el mensaje">
+  <div class="envelope-wrap" id="envelope" role="button" tabindex="0" aria-label="Abrir el mensaje y escuchar nuestra canción">
+    <div class="music-hint" aria-hidden="true"><span>♪</span><span>♫</span><span>♪</span></div>
     <div class="env">
       <div class="body"></div>
       <div class="letter">
@@ -613,12 +661,32 @@ h1{
         </svg>
       </div>
     </div>
-    <div class="tap-hint">💛 Toca el sobre para abrirlo</div>
+    <div class="tap-hint">🎵 Toca el sobre para abrirlo — suena nuestra canción 🎵</div>
   </div>
 </div>
 
 <!-- Contenido -->
 <div id="card">
+
+  <section class="frame" id="quiz">
+    <div class="ornat"><span>❦</span></div>
+    <div class="sub">¿Qué tanto me conoces?</div>
+    <div class="esc-label">— ronda de preguntas sobre nosotros 💛 —</div>
+    <div class="quiz-progress">Pregunta <span id="qNum">1</span> de 3</div>
+    <div id="quizBox">
+      <p class="quiz-q" id="qText"></p>
+      <div class="quiz-opts" id="qOpts"></div>
+    </div>
+    <div class="quiz-feedback" id="qFeedback"></div>
+    <div class="quiz-next" id="qNextWrap" style="display:none;">
+      <button class="btn" id="quizNext">Siguiente <span class="spark">→</span></button>
+    </div>
+    <div class="quiz-end" id="quizEnd">
+      <div class="quiz-score" id="quizScore"></div>
+      <p id="quizEndMsg"></p>
+      <button class="btn" id="quizContinue">Continuar <span class="spark">💛</span></button>
+    </div>
+  </section>
 
   <section class="frame" id="intro">
     <div class="ornat"><span>❦</span></div>
@@ -717,7 +785,7 @@ h1{
 
   <section class="frame reveal" id="recuerdos">
     <div class="ornat"><span>❦</span></div>
-    <div class="sub">Nuestros recuerdos</div>
+    <div class="sub">RECUERDOS</div>
     <div class="esc-label">— momentos que atesoro —</div>
     <div class="galeria">
       <figure class="foto">
@@ -725,30 +793,31 @@ h1{
           <img src="fotos/20260815_160226.jpg" alt="Recuerdo 1" loading="lazy" onerror="this.parentElement.classList.add('vacio')"/>
           <span class="f-vacio"><span>🌻</span>agrega aquí<br>tus fotos</span>
         </div>
-        <figcaption>Escribe aquí<br>el recuerdo 1</figcaption>
+        <figcaption>tan alegre y bailarina</figcaption>
       </figure>
       <figure class="foto">
         <div class="foto-frame">
           <img src="fotos/IMG-20210721-WA0009.jpg" alt="Recuerdo 2" loading="lazy" onerror="this.parentElement.classList.add('vacio')"/>
           <span class="f-vacio"><span>🌻</span>agrega aquí<br>tus fotos</span>
         </div>
-        <figcaption>Escribe aquí<br>el recuerdo 2</figcaption>
+        <figcaption>tan hermosa y bella<br>desde que te conocí</figcaption>
       </figure>
       <figure class="foto">
         <div class="foto-frame">
           <video src="fotos/VID-20260412-WA0317.mp4" muted loop playsinline autoplay preload="metadata"></video>
           <span class="f-video"><span>🎬</span>agrega aquí<br>tus videos</span>
         </div>
-        <figcaption>Escribe aquí<br>el video 1</figcaption>
+        <figcaption>me haces feliz<br>con cada video tuyo</figcaption>
       </figure>
       <figure class="foto">
         <div class="foto-frame">
           <video src="fotos/VID-20260414-WA0229.mp4" muted loop playsinline autoplay preload="metadata"></video>
           <span class="f-video"><span>🎬</span>agrega aquí<br>tus videos</span>
         </div>
-        <figcaption>Escribe aquí<br>el video 2</figcaption>
+        <figcaption>alegras mis días,<br>te amo <3</figcaption>
       </figure>
     </div>
+    <p class="recuerdos-foot">me haces feliz con cada video tuyo, alegras mis días<br>te amo 💛</p>
   </section>
 
   <section class="frame reveal" id="cierre">
@@ -767,11 +836,7 @@ h1{
 
 </div>
 
-<audio id="cancion" loop preload="metadata">
-  <source src="cancion.m4a" type="audio/mp4">
-  <source src="cancion.mp3" type="audio/mpeg">
-  Tu navegador no soporta la canción.
-</audio>
+<audio id="cancion" preload="auto" loop src="cancion.m4a"></audio>
 <button class="audio-btn" id="audioBtn" aria-label="Reproducir o pausar la canción" title="Nuestra canción">🎵</button>
 
 <script>
@@ -856,6 +921,7 @@ function openEnvelope(){
     setTimeout(() => {
       $("#envelope-screen").style.display = "none";
       $("#card").classList.add("visible");
+      if (audioBtn) audioBtn.classList.add("show");
       typeMessage();
     }, 1100);
   }, 1100);
@@ -984,6 +1050,124 @@ garden.querySelectorAll(".flower-pick").forEach((btn) => {
     }
   });
 });
+
+/* ---------- Quiz: ¿Qué tanto me conoces? ---------- */
+const preguntas = [
+  {
+    q: "Si tuviéramos que mudarnos mañana a un lugar completamente diferente, ¿qué prefieres?",
+    a: [
+      "Una cabaña acogedora en la montaña o el bosque, rodeados de naturaleza.",
+      "Un departamento moderno en medio de una gran ciudad cosmopolita.",
+      "Una casa frente al mar en una playa tropical y soleada."
+    ],
+    ok: 0
+  },
+  {
+    q: "Si nos ganáramos la lotería y solo pudiéramos gastar el dinero en una de estas tres cosas hoy mismo, ¿cuál elegirías?",
+    a: [
+      "Comprar la casa de nuestros sueños con todo lujo.",
+      "Irnos de viaje alrededor del mundo durante un año entero sin preocuparnos por nada.",
+      "Invertirlo en un negocio propio o dejarlo ahorrado para nuestra tranquilidad futura."
+    ],
+    ok: 1
+  },
+  {
+    q: "Si un día nos secuestran alienígenas y nos dan a elegir cómo negociar nuestra libertad mediante un talento absurdo, ¿qué harías?",
+    a: [
+      "Bailar una cumbia o reggaetón improvisado con cara de intimidación.",
+      "Competir en quién hace el sonido de animal más patético y realista.",
+      "Ofrecerles una clase magistral de chistes malos hasta que se aburran y nos regresen."
+    ],
+    ok: 1
+  }
+];
+
+const msjBien = [
+  "¡Muy bien! 💛 Por eso te amo, eres la mejor ✨",
+  "¡Correcto, mi amor! 👏✨ Por eso te amo tanto 💛",
+  "¡Claro que sí! 😍 Eres la mejor, chinchosa 💛"
+];
+const msjMal = [
+  "¿¡Qué pasó!? 😅 ¿Cómo no vas a saber, chinchosa? 🙄 ¡Ya no me caes! 😤… (mentira, te amo 💛)",
+  "¡Uy uy uy! 🙈 ¿Cómo vas a fallar esa, chinchosa? 😹 ¡No me caes! 😜",
+  "¿¡No!? 😂 Chinchosa, no me caes… pero igual te amo 💛"
+];
+
+let qi = 0, quizScore = 0;
+const qNum = $("#qNum"), qText = $("#qText"), qOpts = $("#qOpts"),
+      qFb = $("#qFeedback"), qNextWrap = $("#qNextWrap"),
+      quizBox = $("#quizBox"), qEnd = $("#quizEnd"),
+      quizScoreEl = $("#quizScore"), quizEndMsg = $("#quizEndMsg");
+
+function renderQuestion(){
+  qNum.textContent = qi + 1;
+  const p = preguntas[qi];
+  qText.textContent = p.q;
+  qOpts.innerHTML = "";
+  qFb.className = "quiz-feedback";
+  qNextWrap.style.display = "none";
+  p.a.forEach((txt, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "quiz-opt";
+    b.innerHTML = '<span class="tag">' + "ABC"[i] + '</span><span class="txt">' + txt + "</span>";
+    b.addEventListener("click", () => responder(i, b));
+    qOpts.appendChild(b);
+  });
+}
+
+function responder(i, btn){
+  const correcto = i === preguntas[qi].ok;
+  qOpts.querySelectorAll(".quiz-opt").forEach((o, idx) => {
+    o.disabled = true;
+    o.classList.add("clicked");
+    if (idx === preguntas[qi].ok) o.classList.add("ok");
+    else if (idx === i) o.classList.add("bad");
+  });
+  if (correcto){
+    quizScore++;
+    burst(12, btn);
+    qFb.className = "quiz-feedback show ok";
+  } else {
+    burst(8, btn);
+    qFb.className = "quiz-feedback show bad";
+  }
+  qFb.innerHTML = correcto
+    ? msjBien[Math.floor(Math.random() * msjBien.length)]
+    : msjMal[Math.floor(Math.random() * msjMal.length)];
+  qNextWrap.style.display = "block";
+}
+
+$("#quizNext").addEventListener("click", () => {
+  qi++;
+  if (qi < preguntas.length){
+    renderQuestion();
+  } else {
+    quizBox.style.display = "none";
+    qFb.className = "quiz-feedback";
+    qNextWrap.style.display = "none";
+    const total = preguntas.length;
+    queryEnd(quizScore, total);
+    qEnd.classList.add("show");
+    burst(28, qEnd);
+  }
+});
+
+function queryEnd(score, total){
+  quizScoreEl.textContent = score + " de " + total + " 💛";
+  if (score === total){
+    quizEndMsg.textContent = "¡Puntaje perfecto, mi amor! ✨ Eres increíble, por eso te amo tanto.";
+  } else if (score === total - 1){
+    quizEndMsg.textContent = "¡Casi perfecta! 💛 Te amo un montón, chinchosa.";
+  } else if (score === 1){
+    quizEndMsg.textContent = "¡Algo es algo, chinchosa! 😹 Igual te amo. 💛";
+  } else {
+    quizEndMsg.textContent = "¿0 de " + total + "? 😂 ¿Cómo no vas a saber, chinchosa? ¡Otra vez, te amo! 💛";
+  }
+}
+
+$("#quizContinue").addEventListener("click", () => scrollTo("intro"));
+renderQuestion();
 
 /* ---------- Navegación ---------- */
 function scrollTo(id){
