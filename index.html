@@ -398,52 +398,6 @@ h1{
   100%{transform:translateY(-97vh) translateX(var(--hx,10px)) scale(1.15) rotate(var(--hr,-20deg));opacity:0;}
 }
 
-/* ---------- Música ---------- */
-.music-btn{
-  position:fixed;right:18px;bottom:18px;z-index:50;width:56px;height:56px;border-radius:50%;
-  border:1px solid rgba(255,216,77,.5);font-size:1.4rem;
-  background:linear-gradient(135deg,#2c2413,#191409);
-  box-shadow:0 12px 28px -8px rgba(0,0,0,.7), 0 0 18px rgba(255,200,70,.18);
-  display:flex;align-items:center;justify-content:center;
-  animation:musicPulse 4.2s ease-in-out infinite;
-  transition:transform .35s ease;
-}
-.music-btn:hover{transform:scale(1.12);}
-.music-btn.on{box-shadow:0 0 0 7px rgba(240,203,79,.22);}
-@keyframes musicPulse{0%,100%{box-shadow:0 12px 28px -8px rgba(0,0,0,.7);}50%{box-shadow:0 16px 34px -6px rgba(255,200,70,.3);}}
-#music-box{
-  position:fixed;right:18px;bottom:84px;z-index:50;
-  display:none;width:min(352px,86vw);text-align:right;
-}
-#music-box iframe{
-  width:100%;height:215px;border-radius:14px;
-  border:1px solid rgba(255,216,77,.42);
-  box-shadow:0 20px 46px -14px rgba(0,0,0,.75);background:#151210;
-}
-.track-card{
-  background:linear-gradient(180deg,rgba(28,23,16,.98),rgba(17,14,10,.98));
-  border:1px solid rgba(255,216,77,.42);border-radius:18px;
-  box-shadow:0 22px 46px -16px rgba(0,0,0,.75);
-  padding:14px;margin-bottom:10px;backdrop-filter:blur(5px);
-}
-.track-title{
-  font-family:'Great Vibes',cursive;font-size:1.4rem;color:var(--gold);
-  text-align:center;padding-bottom:10px;letter-spacing:.02em;
-  filter:drop-shadow(0 3px 8px rgba(0,0,0,.5));
-}
-.track{
-  display:flex;align-items:center;gap:12px;width:100%;
-  background:linear-gradient(135deg,#221d13,#171209);
-  border:1px solid rgba(255,216,77,.3);border-radius:14px;
-  padding:10px 14px;margin-top:8px;cursor:pointer;text-align:left;
-  transition:transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-}
-.track:hover{transform:translateY(-2px);border-color:var(--gold);box-shadow:0 12px 28px -10px rgba(255,190,60,.2);}
-.track .track-icon{font-size:1.4rem;filter:drop-shadow(0 0 8px rgba(255,200,70,.5));}
-.track .track-name{display:flex;flex-direction:column;font-family:'Great Vibes',cursive;font-size:1.3rem;color:var(--cacao);line-height:1.1;}
-.track .track-name em{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:.82rem;color:#c5a44a;letter-spacing:.05em;}
-.track.activa{border-color:var(--gold);box-shadow:0 0 0 3px rgba(240,203,79,.3), 0 12px 28px -10px rgba(255,190,60,.25);background:linear-gradient(135deg,#2e2512,#3a2d0f);}
-
 @media (max-width:420px){
   .frame{padding:30px 18px 28px;}
 }
@@ -707,20 +661,6 @@ h1{
 
 </div>
 
-<button class="music-btn" id="musicBtn" aria-label="Reproducir nuestra canción" title="Nuestra canción">🎵</button>
-<div id="music-box">
-  <div class="track-card">
-    <div class="track-title">Elige nuestra canción 🎶</div>
-    <button class="track activa soporte" data-src="https://www.youtube.com/embed?listType=search&list=TE+QUIERO+TANTO+KEVIN+KAARL&rel=0">
-      <span class="track-icon">🌻</span><span class="track-name">Te Quiero Tanto<em>Kevin Kaarl</em></span>
-    </button>
-    <button class="track" data-src="https://www.youtube.com/embed?listType=search&list=FLORES+AMARILLAS+DIEGO+TORRES&rel=0">
-      <span class="track-icon">💛</span><span class="track-name">Flores Amarillas<em>Diego Torres</em></span>
-    </button>
-  </div>
-  <iframe id="musicFrame" src="about:blank" title="Reproductor de música" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-</div>
-
 <script>
 const $ = (s) => document.querySelector(s);
 const $$ = (s) => document.querySelectorAll(s);
@@ -787,26 +727,6 @@ function makeHeart(){
 for (let i = 0; i < 4; i++) setTimeout(makeHeart, i * 1600);
 setInterval(() => { if (document.hidden) return; makeHeart(); }, 4200);
 
-/* ---------- Música ---------- */
-const musicBtn = $("#musicBtn"), musicBox = $("#music-box"), musicFrame = $("#musicFrame");
-musicBtn.addEventListener("click", () => {
-  const on = musicBox.style.display === "block";
-  musicBox.style.display = on ? "none" : "block";
-  musicBtn.classList.toggle("on", !on);
-  musicBtn.textContent = on ? "🎵" : "⏸";
-});
-function loadTrack(t, play){
-  musicFrame.src = t.dataset.src + (play ? "&autoplay=1" : "");
-  $$(".track").forEach((x) => x.classList.remove("activa"));
-  t.classList.add("activa");
-}
-$$(".track").forEach((t) => {
-  t.addEventListener("click", () => {
-    loadTrack(t, true);
-    burst(12, t);
-  });
-});
-
 /* ---------- Precarga (pausada) ---------- */
 window.addEventListener("load", () => {
   setTimeout(() => $("#loader").classList.add("out"), 1600);
@@ -817,9 +737,6 @@ const envelope = $("#envelope");
 function openEnvelope(){
   if (envelope.classList.contains("opening")) return;
   envelope.classList.add("opening");
-  /* Comienza la canción "Te Quiero Tanto" de Kevin Kaarl con el gesto del usuario */
-  const kev = $('.track[data-src*="KEVIN+KAARL"]');
-  if (kev){ loadTrack(kev, true); musicBox.style.display = "block"; musicBtn.classList.add("on"); musicBtn.textContent = "⏸"; }
   setTimeout(() => {
     $("#envelope-screen").classList.add("open");
     setTimeout(() => {
